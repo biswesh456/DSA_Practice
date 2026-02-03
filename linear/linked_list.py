@@ -5,6 +5,8 @@
 
 # Disadvantage over dynamic array - Read operation is O(n) unlike dynamic array which is O(1).
 
+# The del function will actually delete others because of python's grabage collection. python maintains reference counting which is the list of things pointing to it. Once the head is deleted, there nothing pointing to the next node and hence that is deleted and so on.
+
 class Node:
     def __init__(self, val):
         self.val = val
@@ -32,6 +34,19 @@ class MyLinkedList:
             curr = curr.next
         return string[:-2]
 
+    def __getitem__(self, idx):
+        curr = self.head
+        pos = 0
+        if idx < 0 or idx >= self.len:
+            return 'index out of range'
+        while curr is not None:
+            if pos == idx:
+                break
+            curr = curr.next
+            pos += 1
+        
+        return curr.val
+
     def insert_head(self, val):
         new_head = Node(val)
         new_head.next = self.head
@@ -40,10 +55,10 @@ class MyLinkedList:
 
     def insert_index(self, index, val):
         if index > self.len:
-            return f'{index} is getter than total number of nodes'
+            return f'{index} is getter than total number of nodes i.e. {self.len}'
 
         if index == 0:
-            self.insert_head(val)
+            return self.insert_head(val)
 
         curr = self.head
         for i in range(index-1):
@@ -53,6 +68,21 @@ class MyLinkedList:
         new_node.next = curr.next
         curr.next = new_node
         self.len += 1
+
+    def insert_after(self, after, val):
+        curr = self.head
+        while curr is not None:
+            if curr.val == after:
+                new_node = Node(val)
+                new_node.next = curr.next
+                curr.next = new_node
+                self.len += 1
+                break
+            else:
+                 curr = curr.next
+        
+        if curr is None:
+            return f'{after} not in the linked list'
 
     def append(self, val):
         if self.head is None:
@@ -72,6 +102,73 @@ class MyLinkedList:
             print(curr.val)
             curr = curr.next
 
+    def clear(self):
+        self.head = None
+        self.len = 0
+
+    def delete_head(self):
+        if self.head is None:
+            return 'empty linked list'
+        self.head = self.head.next
+        self.len -= 1
+
+    def pop(self):
+        if self.head is None:
+            return 'empty linked list'
+
+        if self.head.next is None:
+            val = self.head.val
+            self.head = None
+            self.len -= 1
+            return val
+        curr = self.head
+        while curr.next.next is not  None:
+            curr = curr.next
+        
+        val = curr.next.val
+        curr.next = None
+        return val
+
+    def remove(self, val):
+        if self.head is None:
+            return 'empty linked list'
+
+        curr = self.head
+        while curr is not None and curr.next.val != val:
+            curr = curr.next
+        
+        if curr is None:
+            return 'value not found'
+        else:
+            curr.next = curr.next.next
+
+    def search(self, val):
+        curr = self.head
+        pos = 0
+
+        while curr is not None and curr.val != val:
+            curr = curr.next
+            pos += 1
+
+        if curr is None:
+            return 'value not found'
+        
+        else:
+            return pos
+
+    def reverse(self):
+        prev = None
+        curr = self.head
+        
+        while curr.next is not None:
+            forward = curr.next
+            curr.next = prev
+            prev = curr
+            curr = forward
+
+        curr.next = prev
+        self.head = curr
+
 l = MyLinkedList()
 l.insert_head(1)
 l.insert_head(2)
@@ -81,7 +178,19 @@ l.traverse()
 l.insert_index(5, 6)
 l.insert_index(2, 10)
 l.insert_index(0, 100)
-l.insert_index(7, 1000)
+print(l.insert_index(6, 1000))
+l.insert_after(2, 55)
+print(l)
+l.delete_head()
+print(l)
+print('popped', l.pop())
+print('popped', l.pop())
+print(l)
+l.remove(55)
+print(l)
+l.reverse()
+print(l)
+l.reverse()
 print(l)
 
     

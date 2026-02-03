@@ -23,7 +23,7 @@ for i in range(100):
 
 # create my own list
 import ctypes
-class mylist:
+class Mylist:
     def __init__(self):
         self.size = 1
         self.len = 0
@@ -31,7 +31,30 @@ class mylist:
 
     def __len__(self):
         return self.len
-    
+
+    def __str__(self):
+        result = '['
+        for i in range(self.len-1):
+            result += str(self.array[i]) + ', '
+        result += str(self.array[self.len-1]) + ']'
+        return result
+
+    def __getitem__(self, idx):
+        if idx < self.len:
+            return self.array[idx]
+        else:
+            return 'index out of range'
+
+    def __delitem__(self, pos):
+        if pos > self.len:
+            return 'position out of range'
+        elif self.len == 0:
+            return 'list is empty'
+        else:
+            for i in range(pos, self.len-1):
+                self.array[i] = self.array[i+1]
+            self.len -= 1
+
     # Create a c type array(static referential array) of a particular size
     def _make_array(self, size):
         return (size*ctypes.py_object)()
@@ -46,19 +69,6 @@ class mylist:
         
         self.array[self.len] = val
         self.len += 1
-
-    def __str__(self):
-        result = '['
-        for i in range(self.len-1):
-            result += str(self.array[i]) + ', '
-        result += str(self.array[self.len-1]) + ']'
-        return result
-
-    def __getitem__(self, idx):
-        if idx < self.len:
-            return self.array[idx]
-        else:
-            return 'index out of range'
 
     def pop(self):
         if self.len == 0:
@@ -93,8 +103,28 @@ class mylist:
         self.len += 1
         self.array = temp_array
 
+    def remove(self, val):
+        flag = False
+        pos = -1
+        for i in range(self.len-1):
+            if self.array[i] == val:
+                flag = True
+                pos = i
+            if flag:
+                self.array[i] = self.array[i+1]
+        
+        if not flag and self.array[-1] == val:
+            flag = True
+            pos = self.len-1
 
-l = mylist()
+        if flag:
+            self.len -= 1
+            return pos
+        else:
+            return 'value not found'
+
+
+l = Mylist()
 for i in range(10):
     l.append(i ** 2)
 

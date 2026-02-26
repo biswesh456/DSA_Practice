@@ -12,12 +12,6 @@ class Node:
         self.val = val
         self.next = None
 
-    def getVal(self):
-        return self.val
-    
-    def getNext(self):
-        return self.next
-
 class MyLinkedList:
     def __init__(self):
         self.head = None
@@ -99,8 +93,10 @@ class MyLinkedList:
     def traverse(self):
         curr = self.head
         while curr is not None:
-            print(curr.val)
+            print(f"{curr.val};", end='')
             curr = curr.next
+
+        print()
 
     def clear(self):
         self.head = None
@@ -178,7 +174,7 @@ l.traverse()
 l.insert_index(5, 6)
 l.insert_index(2, 10)
 l.insert_index(0, 100)
-print(l.insert_index(6, 1000))
+l.insert_index(6, 1000)
 l.insert_after(2, 55)
 print(l)
 l.delete_head()
